@@ -3,7 +3,7 @@ name: CI/CD Deploy App
 on:
   push:
     branches:
-      - main  # Se ejecuta cuando haces push a main
+      - main
 
 jobs:
   build-and-deploy:
@@ -18,8 +18,8 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.Dockerhub_josengel056 }}
-          password: ${{ secrets.dockerhub_dckr_pat_YqirKTPko4N6cjVRMR3ZKi4ORBI }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # 3. Construir y subir la imagen a Docker Hub
       - name: Build and push Docker image
@@ -31,6 +31,6 @@ jobs:
       # 4. Desplegar en Render
       - name: Deploy to Render
         run: |
-          curl -X POST "https://api.render.com/v1/services/${{ secrets.serviceID_srv-d2lokd3ipnbc738gjekg }}/deploys" \
-          -H "Authorization: Bearer ${{ secrets.ApiKey_rnd_h3ft51l8lha8lZ1OmbDXkK3UMvuN }}" \
+          curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
           -H "Content-Type: application/json"
