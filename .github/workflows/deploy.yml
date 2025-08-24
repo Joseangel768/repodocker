@@ -1,0 +1,36 @@
+name: CI/CD Deploy App
+
+on:
+  push:
+    branches:
+      - main  # Se ejecuta cuando haces push a main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout del código
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Loguearse en Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.Dockerhub_josengel056 }}
+          password: ${{ secrets.dockerhub_dckr_pat_YqirKTPko4N6cjVRMR3ZKi4ORBI }}
+
+      # 3. Construir y subir la imagen a Docker Hub
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: josengel056/mi-app:latest
+
+      # 4. Desplegar en Render
+      - name: Deploy to Render
+        run: |
+          curl -X POST "https://api.render.com/v1/services/${{ secrets.serviceID_srv-d2lokd3ipnbc738gjekg }}/deploys" \
+          -H "Authorization: Bearer ${{ secrets.ApiKey_rnd_h3ft51l8lha8lZ1OmbDXkK3UMvuN }}" \
+          -H "Content-Type: application/json"
